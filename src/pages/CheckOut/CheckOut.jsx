@@ -1,11 +1,12 @@
-import React, { useContext } from 'react';
+import { useContext } from 'react';
 import { useLoaderData } from 'react-router-dom';
 import { AuthContext } from '../../provider/AuthProvider';
+import Swal from 'sweetalert2/dist/sweetalert2.js'
 
 const CheckOut = () => {
 
     const service = useLoaderData();
-    const { title, price, _id } = service;
+    const { title, price, _id, img } = service;
 
     const {user} = useContext(AuthContext)
 
@@ -21,6 +22,7 @@ const CheckOut = () => {
         const order = {
             customerName: name, 
             email,
+            img,
             date,
             service: _id,
             price
@@ -35,7 +37,16 @@ const CheckOut = () => {
             body: JSON.stringify(order)
         })
         .then(res => res.json())
-        .then(data => console.log(data))
+        .then(data => {
+            if(data.insertedId){
+                Swal.fire({
+                    title: 'Success',
+                    text: 'Order sent successfully',
+                    icon: 'success',
+                    confirmButtonText: 'Ok'
+                  })
+            }
+        })
 
     }
 
