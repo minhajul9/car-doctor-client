@@ -24,8 +24,9 @@ const CheckOut = () => {
             email,
             img,
             date,
-            service: _id,
-            price
+            service: title,
+            price,
+
         }
         console.log(order);
 
