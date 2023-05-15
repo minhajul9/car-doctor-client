@@ -9,12 +9,39 @@ const Bookings = () => {
     const [bookings, setBookings] = useState([])
 
     useEffect(() => {
-        fetch(`http://localhost:5000/bookings?email=${user?.email}`)
+        fetch(`http://localhost:5000/bookings?email=${user?.email}`, {
+            method: 'GET', 
+            headers: {
+                authorization: `Bearer ${localStorage.getItem('car-access-token')}`
+            },
+
+        })
             .then(res => res.json())
             .then(data => {
                 setBookings(data);
             })
     }, [])
+
+
+    const handleBookingConfirm = id => {
+        fetch(`http://localhost:5000/bookings/${id}`, {
+            method: "PATCH",
+            headers: {
+                "content-type": "application/json"
+            },
+            body: JSON.stringify({ status: 'confirm' })
+        })
+            .then(res => res.json())
+            .then(data => {
+                console.log(data);
+                if (data.modifiedCount > 0) {
+                    const remaining = bookings.filter(booking => booking._id !== id);
+                    const updated = bookings.find(booking => booking._id === id)
+                    updated.status = 'confirm'
+                    setBookings([updated, ...remaining])
+                }
+            })
+    }
 
     const handleDeleteBooking = id => {
         Swal.fire({
@@ -57,10 +84,11 @@ const Bookings = () => {
                 <table className="table w-full">
                     <tbody>
                         {
-                            bookings.map(booking => <BookingRow
+                            bookings?.map(booking => <BookingRow
                                 key={booking._id}
                                 booking={booking}
                                 handleDeleteBooking={handleDeleteBooking}
+                                handleBookingConfirm={handleBookingConfirm}
                             ></BookingRow>)
                         }
 

@@ -9,7 +9,9 @@ const Navbar = () => {
 
     const handleLogout = () => {
         logOut()
-            .then()
+            .then(() => {
+                localStorage.removeItem('car-access-token')
+            })
             .catch(error => console.log(error))
     }
 
@@ -22,7 +24,7 @@ const Navbar = () => {
                 <button onClick={handleLogout} className='btn'>Log Out</button>
             </>
                 :
-                <NavLink to='/login'>Login</NavLink>
+                <li><NavLink to='/login'>Login</NavLink></li>
         }
 
     </>
