@@ -2,13 +2,14 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import img from '../../assets/images/login/login.svg'
 import { useContext } from 'react';
 import { AuthContext } from '../../provider/AuthProvider';
+import SocialLogin from '../Shared/SocialLogin/SocialLogin';
 
 const Login = () => {
 
     const { signIn } = useContext(AuthContext)
     const location = useLocation();
     const navigate = useNavigate();
-    
+
     const from = location.state?.from?.pathname;
     // console.log(from);
 
@@ -22,21 +23,10 @@ const Login = () => {
             .then(result => {
                 const user = result.user;
                 // console.log(user);
-                const loggedUser = { email: user.email};
-                
-                fetch('http://localhost:5000/jwt', {
-                    method: "POST",
-                    headers: {
-                        'content-type' : "application/json"
-                    },
-                    body: JSON.stringify(loggedUser)
-                })
-                .then(res => res.json())
-                .then(data => {
-                    // console.log(data)
-                    localStorage.setItem('car-access-token', data.token)
-                    navigate(from || '/', {replace: true} )
-                })
+
+                navigate(from || '/', { replace: true })
+
+
             })
             .catch(error => console.log(error))
     }
@@ -72,6 +62,7 @@ const Login = () => {
                         </form>
 
                         <p className='my-4 text-center'>New here? <Link to='/signup' className='text-orange-600 font-bold'>Sign Up</Link></p>
+                        <SocialLogin from={from}></SocialLogin>
                     </div>
                 </div>
             </div>
